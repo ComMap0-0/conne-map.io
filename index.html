@@ -30,7 +30,7 @@
                             {url:./N03-20240101_13.geojson,color:'#000000'}
         ];
         // 地図の読み込みが完了したらGeoJSONデータを追加
-             map.on('load', () => {
+            map.on('load', () => {
             // 各GeoJSONファイルを順に読み込んで地図に追加
             geoJsonFiles.forEach((file, index) => {
                 fetch(file.url)
@@ -43,14 +43,17 @@
                             data: data
                         });
 
-                        // 塗りつぶしを透明にし、境界線の色を設定
+                        // ポイント（円）として表示し、塗りつぶし色を設定
                         map.addLayer({
                             id: `geojson-layer-${index}`,
-                            type: 'fill',
+                            type: 'circle',
                             source: sourceId,
                             paint: {
-                                'fill-color': 'rgba(0, 0, 0, 0)', // 塗りつぶしは透明
-                                'fill-outline-color': file.color // 各ファイルごとに異なる境界線の色
+                                'circle-radius': 6,           // 円の半径
+                                'circle-color': file.color,   // 塗りつぶしの色
+                                'circle-opacity': 0.8,        // 塗りつぶしの透明度
+                                'circle-stroke-width': 1,     // 境界線の太さ
+                                'circle-stroke-color': '#ffffff' // 境界線の色（白）
                             }
                         });
                     })
