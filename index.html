@@ -26,33 +26,36 @@
         });
 
         // GeoJSONファイルのURL (GitHub Pages上のファイル)
-        const geoJsonUrl = './東京駅_集客施設_4326.geojson';
-
+        const geoJsonUrl = [｛url:./東京駅_集客施設_4326.geojson,color:'#fffff'},
+                            {url:./N03-20240101_13.geojson,color:'#000000'}
+        ];
         // 地図の読み込みが完了したらGeoJSONデータを追加
-        map.on('load', () => {
-            // GeoJSONファイルをGitHub Pagesから読み込む
-            fetch(geoJsonUrl)
-                .then(response => response.json())
-                .then(data => {
-                    // GeoJSONデータをMapLibreのソースとして追加
-                    map.addSource('geojson-data', {
-                        type: 'geojson',
-                        data: data
-                    });
+             map.on('load', () => {
+            // 各GeoJSONファイルを順に読み込んで地図に追加
+            geoJsonFiles.forEach((file, index) => {
+                fetch(file.url)
+                    .then(response => response.json())
+                    .then(data => {
+                        // 各ファイルを別のソースとして追加
+                        const sourceId = `geojson-source-${index}`;
+                        map.addSource(sourceId, {
+                            type: 'geojson',
+                            data: data
+                        });
 
-                    // GeoJSONデータを地図上にポイントとして表示
-                    map.addLayer({
-                        id: 'geojson-layer',
-                        type: 'circle',
-                        source: 'geojson-data',
-                        paint: {
-                            'circle-radius': 6,
-                            'circle-color': '#ff0000',  // 赤色
-                            'circle-opacity': 0.8
-                        }
-                    });
-                })
-                .catch(error => console.error('GeoJSONの読み込みに失敗しました:', error));
+                        // 塗りつぶしを透明にし、境界線の色を設定
+                        map.addLayer({
+                            id: `geojson-layer-${index}`,
+                            type: 'fill',
+                            source: sourceId,
+                            paint: {
+                                'fill-color': 'rgba(0, 0, 0, 0)', // 塗りつぶしは透明
+                                'fill-outline-color': file.color // 各ファイルごとに異なる境界線の色
+                            }
+                        });
+                    })
+                    .catch(error => console.error(`GeoJSONファイルの読み込みに失敗しました: ${file.url}`, error));
+            });
         });
     </script>
 </body>
