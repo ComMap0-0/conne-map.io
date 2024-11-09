@@ -25,13 +25,14 @@
             zoom: 10  // 初期ズームレベル
         });
 
-        // GeoJSONファイルのURL (GitHub Pages上のファイル)
-        const geoJsonUrl = [
-            {url:'./東京駅_集客施設_4326.geojson',color:'#42f5a7',type:'polygon'},
-            {url:.'/N03-20240101_13.geojson',color:'#000000',type:'point'}
+        // GeoJSONファイルのリスト (URL、色、タイプを指定)
+        const geoJsonFiles = [
+            { url: './N03-20240101_13.geojson', color: '#42f5a7', type: 'polygon' },
+            { url: './東京駅_集客施設_4326.geojson', color: '#000000', type: 'point' }
         ];
+
         // 地図の読み込みが完了したらGeoJSONデータを追加
-            map.on('load', () => {
+        map.on('load', () => {
             // 各GeoJSONファイルを順に読み込んで地図に追加
             geoJsonFiles.forEach((file, index) => {
                 fetch(file.url)
@@ -44,7 +45,7 @@
                             data: data
                         });
 
-                         // ポリゴンデータのレイヤー設定
+                        // ポリゴンデータのレイヤー設定
                         if (file.type === 'polygon') {
                             map.addLayer({
                                 id: `polygon-layer-${index}`,
@@ -56,8 +57,9 @@
                                 }
                             });
                         }
-                        // ポイント（円）として表示し、塗りつぶし色を設定
-                       if (file.type === 'point') {
+
+                        // ポイントデータのレイヤー設定
+                        if (file.type === 'point') {
                             map.addLayer({
                                 id: `point-layer-${index}`,
                                 type: 'circle',
