@@ -71,6 +71,24 @@
                     });
                 }
             })
+            else if (file.type === 'line') {
+                    // 鉄道などの線データのレイヤー
+                    map.addLayer({
+                        id: `line-layer-${index}`,
+                        type: 'line',
+                        source: sourceId,
+                        paint: {
+                            'line-color': file.color || '#555555',     // 線の色
+                            'line-width': file.lineWidth || 3,          // 線の太さ
+                            'line-dasharray': file.dashPattern || [2, 4], // ダッシュパターン（鉄道風）
+                            'line-opacity': 0.8                          // 不透明度
+                        },
+                        layout: {
+                            'line-cap': 'round',   // 線の端を丸く
+                            'line-join': 'round'   // 線の角を丸く
+                        }
+                    });
+                }
             .catch(error => console.error(`GeoJSONファイルの読み込みに失敗しました: ${file.url}`, error));
     });
 });
