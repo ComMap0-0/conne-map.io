@@ -41,13 +41,15 @@
                 if (!response.ok) throw new Error(`Network response was not ok: ${response.statusText}`);
                 return response.json();
             })
-            .then(data => {
+           .then(data => {
                 const sourceId = `data-source-${index}`;
                 map.addSource(sourceId, {
                     type: 'geojson',
                     data: data
                 });
+
                 if (file.type === 'polygon') {
+                    // ポリゴンレイヤー
                     map.addLayer({
                         id: `polygon-layer-${index}`,
                         type: 'fill',
@@ -58,6 +60,7 @@
                         }
                     });
                 } else if (file.type === 'point') {
+                    // ポイントレイヤー
                     map.addLayer({
                         id: `point-layer-${index}`,
                         type: 'circle',
@@ -69,9 +72,7 @@
                             'circle-stroke-color': '#ffffff'
                         }
                     });
-                }
-            })
-            else if (file.type === 'line') {
+                } else if (file.type === 'line') {
                     // 鉄道などの線データのレイヤー
                     map.addLayer({
                         id: `line-layer-${index}`,
@@ -89,10 +90,10 @@
                         }
                     });
                 }
+            })
             .catch(error => console.error(`GeoJSONファイルの読み込みに失敗しました: ${file.url}`, error));
     });
 });
-
     </script>
 </body>
 </html>
