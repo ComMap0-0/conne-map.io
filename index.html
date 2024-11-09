@@ -26,7 +26,7 @@
         });
 
         // GeoJSONファイルのURL (GitHub Pages上のファイル)
-        const geoJsonUrl = [｛url:./東京駅_集客施設_4326.geojson,color:'#42f5a7'},
+        const geoJsonUrl = [{url:./東京駅_集客施設_4326.geojson,color:'#42f5a7'},
                             {url:./N03-20240101_13.geojson,color:'#000000'}
         ];
         // 地図の読み込みが完了したらGeoJSONデータを追加
@@ -43,7 +43,20 @@
                             data: data
                         });
 
+                        if(file.type === 'polygon'){
+                            map.addLayer({
+                                id:'polygon-layer-${index}',
+                                type:'fill',
+                                source:sourceId,
+                                paint:{
+                                    'fill-color':'rgba(0,0,0,0)',
+                                    'fill-outline-color':file.color
+                                }
+                            });
+                        }
+
                         // ポイント（円）として表示し、塗りつぶし色を設定
+                      if(file.type ==='point'){  
                         map.addLayer({
                             id: `geojson-layer-${index}`,
                             type: 'circle',
@@ -56,6 +69,7 @@
                                 'circle-stroke-color': '#ffffff' // 境界線の色（白）
                             }
                         });
+                      }
                     })
                     .catch(error => console.error(`GeoJSONファイルの読み込みに失敗しました: ${file.url}`, error));
             });
