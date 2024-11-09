@@ -72,28 +72,43 @@
                             'circle-stroke-color': '#ffffff'
                         }
                     });
-                } else if (file.type === 'line') {
-                    // 鉄道などの線データのレイヤー
-                    map.addLayer({
-                        id: `line-layer-${index}`,
-                        type: 'line',
-                        source: sourceId,
-                        paint: {
-                            'line-color': file.color || '#fffffff',     // 線の色
-                            'line-width': file.lineWidth || 3,          // 線の太さ
-                            'line-dasharray': file.dashPattern || [2, 4], // ダッシュパターン（鉄道風）
-                            'line-opacity': 0.8                          // 不透明度
-                        },
-                        layout: {
-                            'line-cap': 'round',   // 線の端を丸く
-                            'line-join': 'round'   // 線の角を丸く
+             } else if (file.type === 'line') {
+                            // 下の黒線レイヤー（太めの黒線）
+                            map.addLayer({
+                                id: `line-underlayer-${index}`,
+                                type: 'line',
+                                source: sourceId,
+                                paint: {
+                                    'line-color': file.underLineColor || '#000000', // 黒線
+                                    'line-width': file.underLineWidth || 6, // 破線より太めの幅
+                                    'line-opacity': 0.8
+                                },
+                                layout: {
+                                    'line-cap': 'round',
+                                    'line-join': 'round'
+                                }
+                            });
+
+                            // 上の破線レイヤー（鉄道風の破線）
+                            map.addLayer({
+                                id: `line-layer-${index}`,
+                                type: 'line',
+                                source: sourceId,
+                                paint: {
+                                    'line-color': file.color || '#ff0000',    // 破線の色
+                                    'line-width': file.lineWidth || 3,         // 破線の太さ
+                                    'line-dasharray': file.dashPattern || [2, 4], // ダッシュパターン
+                                    'line-opacity': 0.8
+                                },
+                                layout: {
+                                    'line-cap': 'round',
+                                    'line-join': 'round'
+                                }
+                            });
                         }
-                    });
-                }
-            })
-            .catch(error => console.error(`GeoJSONファイルの読み込みに失敗しました: ${file.url}`, error));
-    });
-});
-    </script>
+                    })
+                    .catch(error => console.error(`GeoJSONファイルの読み込みに失敗しました: ${file.url}`, error));
+            });
+        });    </script>
 </body>
 </html>
