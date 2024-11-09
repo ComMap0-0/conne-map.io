@@ -33,49 +33,46 @@
 
         // 地図の読み込みが完了したらGeoJSONデータを追加
         map.on('load', () => {
-            // 各GeoJSONファイルを順に読み込んで地図に追加
-            geoJsonFiles.forEach((file, index) => {
-                fetch(file.url)
-                    .then(response => response.json())
-                    .then(data => {
-                        // 各ファイルを別のソースとして追加
-                        const sourceId = `geojson-source-${index}`;
-                        map.addSource(sourceId, {
-                            type: 'geojson',
-                            data: data
-                        });
-
-                        // ポリゴンデータのレイヤー設定
-                        if (file.type === 'polygon') {
-                            map.addLayer({
-                                id: `polygon-layer-${index}`,
-                                type: 'fill',
-                                source: sourceId,
-                                paint: {
-                                    'fill-color': 'rgba(0, 0, 0, 0)',  // 塗りつぶしを透明に
-                                    'fill-outline-color': file.color    // ポリゴンの境界線の色
-                                }
-                            });
+    geoJsonFiles.forEach((file, index) => {
+        fetch(file.url)
+            .then(response => {
+                if (!response.ok) throw new Error(`Network response was not ok: ${response.statusText}`);
+                return response.json();
+            })
+            .then(data => {
+                const sourceId = `data-source-${index}`;
+                map.addSource(sourceId, {
+                    type: 'geojson',
+                    data: data
+                });
+                if (file.type === 'polygon') {
+                    map.addLayer({
+                        id: `polygon-layer-${index}`,
+                        type: 'fill',
+                        source: sourceId,
+                        paint: {
+                            'fill-color': 'rgba(0, 0, 0, 0)',
+                            'fill-outline-color': file.color
                         }
-
-                        // ポイントデータのレイヤー設定
-                        if (file.type === 'point') {
-                            map.addLayer({
-                                id: `point-layer-${index}`,
-                                type: 'circle',
-                                source: sourceId,
-                                paint: {
-                                    'circle-radius': 6,                // 円の半径
-                                    'circle-color': file.color,        // 塗りつぶしの色
-                                    'circle-stroke-width': 1,          // 境界線の太さ
-                                    'circle-stroke-color': '#ffffff'   // 境界線の色（白）
-                                }
-                            });
+                    });
+                } else if (file.type === 'point') {
+                    map.addLayer({
+                        id: `point-layer-${index}`,
+                        type: 'circle',
+                        source: sourceId,
+                        paint: {
+                            'circle-radius': 6,
+                            'circle-color': file.color,
+                            'circle-stroke-width': 1,
+                            'circle-stroke-color': '#ffffff'
                         }
-                    })
-                    .catch(error => console.error(`GeoJSONファイルの読み込みに失敗しました: ${file.url}`, error));
-            });
-        });
+                    });
+                }
+            })
+            .catch(error => console.error(`GeoJSONファイルの読み込みに失敗しました: ${file.url}`, error));
+    });
+});
+
     </script>
 </body>
 </html>
