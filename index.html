@@ -36,69 +36,84 @@
         const styleJsonFile = './地図スタイル.json';
 
         // 地図の読み込みが完了したらGeoJSONデータを追加
-       map.on('load', () => {
-            // GeoJSONデータソースを追加
-            map.addSource('geojson-source', {
-                type: 'geojson',
-                data: geoJsonUrl
-            });
+map.on('load', () => {
+    geoJsonFiles.forEach((file, index) => {
+        fetch(file.url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Failed to load ${file.url}: ${response.statusText}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                const sourceId = `source-${index}`;
+                map.addSource(sourceId, {
+                    type: 'geojson',
+                    data: data
+                });
 
-            // スタイル設定ファイルを読み込んで適用
-            fetch(styleJsonUrl)
-                .then(response => response.json())
-                .then(styleData => {
-                    styleData.layers.forEach((layer, index) => {
-                        if (layer.type === 'line') {
-                            // 下の黒線レイヤー
-                            map.addLayer({
-                                id: `line-underlayer-${index}`,
-                                type: 'line',
-                                source: 'geojson-source',
-                                paint: {
-                                    'line-color': layer.underLineColor || '#000000',
-                                    'line-width': (layer.lineWidth || 5) + 2,
-                                    'line-opacity': 0.3
-                                },
-                                layout: {
-                                    'line-cap': 'round',
-                                    'line-join': 'round'
-                                }
-                            });
-
-                            // 上の破線レイヤー
-                            map.addLayer({
-                                id: `line-layer-${index}`,
-                                type: 'line',
-                                source: 'geojson-source',
-                                paint: {
-                                    'line-color': layer.color || '#ffffff',
-                                    'line-width': layer.lineWidth || 5,
-                                    'line-dasharray': layer.dashPattern || [2, 3],
-                                    'line-opacity': 0.8
-                                },
-                                layout: {
-                                    'line-cap': 'round',
-                                    'line-join': 'round'
-                                }
-                            });
-                        } else if (layer.type === 'point') {
-                            // ポイントレイヤー
-                            map.addLayer({
-                                id: `point-layer-${index}`,
-                                type: 'circle',
-                                source: 'geojson-source',
-                                paint: {
-                                    'circle-radius': 6,
-                                    'circle-color': layer.color || '#FF0000',
-                                    'circle-stroke-width': 3,
-                                    'circle-stroke-color': '#ffffff'
-                                }
-                            });
+                if (file.type === 'polygon') {
+                    // ポリゴンレイヤー
+                    map.addLayer({
+                        id: `polygon-layer-${index}`,
+                        type: 'fill',
+                        source: sourceId,
+                        paint: {
+                            'fill-color': 'rgba(0, 0, 0, 0)',
+                            'fill-outline-color': file.color
                         }
                     });
-                })
-                .catch(error => console.error('スタイルファイルの読み込みに失敗しました:', error));
-        });
+                } else if (file.type === 'line') {
+                    // 下の黒線レイヤー（太めの黒線）
+                    map.addLayer({
+                        id: `line-underlayer-${index}`,
+                        type: 'line',
+                        source: sourceId,
+                        paint: {
+                            'line-color': file.underLineColor || '#000000',
+                            'line-width': (file.lineWidth || 5) + 2,
+                            'line-opacity': 0.3
+                        },
+                        layout: {
+                            'line-cap': 'round',
+                            'line-join': 'round'
+                        }
+                    });
+
+                    // 上の破線レイヤー（鉄道風の破線）
+                    map.addLayer({
+                        id: `line-layer-${index}`,
+                        type: 'line',
+                        source: sourceId,
+                        paint: {
+                            'line-color': file.color || '#ffffff',
+                            'line-width': file.lineWidth || 5,
+                            'line-dasharray': file.dashPattern || [2, 3],
+                            'line-opacity': 0.8
+                        },
+                        layout: {
+                            'line-cap': 'round',
+                            'line-join': 'round'
+                        }
+                    });
+                } else if (file.type === 'point') {
+                    // ポイントレイヤー
+                    map.addLayer({
+                        id: `point-layer-${index}`,
+                        type: 'circle',
+                        source: sourceId,
+                        paint: {
+                            'circle-radius': 6,
+                            'circle-color': file.color,
+                            'circle-stroke-width': 3,
+                            'circle-stroke-color': '#ffffff'
+                        }
+                    });
+                }
+            })
+            .catch(error => console.error(`Error loading GeoJSON file: ${error.message}`));
+    });
+});
     </script>
 </body>
 </html>
