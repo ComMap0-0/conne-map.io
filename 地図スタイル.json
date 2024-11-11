@@ -1,43 +1,50 @@
-  {
+{
     "version": 8,
     "sources": {
-        "geojson-source": {
+        "polygon-source": {
             "type": "geojson",
-            "data": "./東京都_路線_R5_4326v4.geojson"  
+            "data": "./東京都（本島のみ）_行政区域_4326v2.geojson"
+        },
+        "line-source": {
+            "type": "geojson",
+            "data": "./東京都_路線_R5_4326v4.geojson"
+        },
+        "point-source": {
+            "type": "geojson",
+            "data": "./東京駅_集客施設_4326.geojson"
         }
     },
     "layers": [
         {
             "id": "polygon-layer",
             "type": "fill",
-            "filter": ["==", ["get", "type"], "polygon"],
+            "source": "polygon-source",
             "paint": {
                 "fill-color": "rgba(0, 0, 0, 0)",
                 "fill-outline-color": "#000000"
             }
         },
-      
         {
             "id": "line-layer",
             "type": "line",
-            "source": "geojson-source",
+            "source": "line-source",
             "paint": {
-                "line-color": ["get", "色"],  
-                "line-width": 3,                      
-                "line-opacity": 0.8                   
+                "line-color": ["get", "line_color"],
+                "line-width": 3,
+                "line-opacity": 0.8
             },
             "layout": {
-                "line-cap": "round",                 
-                "line-join": "round"                  
+                "line-cap": "round",
+                "line-join": "round"
             }
         },
         {
             "id": "point-layer",
             "type": "circle",
-            "filter": ["==", ["get", "type"], "point"],
+            "source": "point-source",
             "paint": {
                 "circle-radius": 6,
-                "circle-color": "#ff0000",
+                "circle-color": ["get", "point_color"],
                 "circle-stroke-width": 3,
                 "circle-stroke-color": "#ffffff"
             }
