@@ -46,8 +46,8 @@
                         type: 'fill',
                         source: 'polygon-source',
                         paint: {
-                        'fill-color': 'rgba(0, 0, 0, 0)', // 完全に透明
-                        'fill-outline-color': 'rgba(0, 0, 0, 0)' // 透明にして線レイヤーに委ねる
+                        'fill-color': '#f0a', // 完全に透明
+                        'fill-outline-color': '0.5' // 透明にして線レイヤーに委ねる
                         }
                         });
 
@@ -63,7 +63,8 @@
                         layout: {
                         'line-cap': 'round',          // 線の端を丸める
                         'line-join': 'round'          // 線の角を丸める
-                        }
+                                }
+                            });
                         });
 
             // 2. Line GeoJSON Layer
