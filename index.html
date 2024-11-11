@@ -33,15 +33,20 @@
                         
         ];
 
+        const syoleJsonFile = './地図スタイル.json';
+
         // 地図の読み込みが完了したらGeoJSONデータを追加
         map.on('load', () => {
-    geoJsonFiles.forEach((file, index) => {
-        fetch('./地図スタイル.json')
+            map.addSource('geojson-source',{
+                type: 'geojson',
+                data:geoJsonUrl
+            });
+            
+            fetch(styleJsonUrl)
             .then(response => response.json())
             .then(styleData =>{
                 styleData.layers.forEach((layer,index)=>{
-                    const sourceIs = `source-${index}`;
-                    map.addSource(sourceId,{type:'geojson',data:'./地図スタイル.json'});
+                    
                 if (file.type === 'polygon') {
                     // ポリゴンレイヤー
                     map.addLayer({
@@ -103,6 +108,7 @@
                     })
                     .catch(error => console.error(`GeoJSONファイルの読み込みに失敗しました: ${file.url}`, error));
             });
-        });    </script>
+        });   
+            </script>
 </body>
 </html>
