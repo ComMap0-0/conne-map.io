@@ -37,10 +37,10 @@
         // 地図の読み込みが完了したらGeoJSONデータを追加
        map.on('load', () => {
             // 1. Polygon GeoJSON Layer
-            fetch('./東京都（本島のみ）_行政区域_4326v2.geojson')
-                .then(response => response.json())
-                .then(data => {
-                    map.addSource('polygon-source', { type: 'geojson', data: data });
+                map.addSource('polygon-source', {
+                    type: 'geojson',
+                    data: './/東京都（本島のみ）_行政区域_4326v2.geojson' 
+                        });
                    map.addLayer({
                         id: 'polygon-fill-layer',
                         type: 'fill',
@@ -51,7 +51,7 @@
                         }
                         });
 
-// 2. 境界線を表すラインレイヤー
+        // 2. 境界線を表すラインレイヤー
                     map.addLayer({
                         id: 'polygon-outline-layer',
                         type: 'line',
