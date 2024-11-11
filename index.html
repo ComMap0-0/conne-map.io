@@ -27,32 +27,65 @@
 
         // GeoJSONファイルのリスト (URL、色、タイプを指定)
         const geoJsonFiles = [
-            { url: './東京都（本島のみ）_行政区域_4326v2.geojson'},
-            { url: './東京都_路線_R5_4326v4.geojson'},
-            { url: './東京駅_集客施設_4326.geojson'}
+            { url: './東京都（本島のみ）_行政区域_4326v2.geojson',layerId: 'polygon-layer'},
+            { url: './東京都_路線_R5_4326v4.geojson', layerId: 'line-layer'},
+            { url: './東京駅_集客施設_4326.geojson', layerId: 'point-layer' }
                         
         ];
 
        
         // 地図の読み込みが完了したらGeoJSONデータを追加
-map.on('load', () => {
-    // GeoJSONデータを追加
-    map.addSource('geojson-source', {
-        type: 'geojson',
-        data: './地図スタイル.json'  // GeoJSONファイルのパス
-    });
+  map.on('load', () => {
+            geoJsonFiles.forEach((file, index) => {
+                fetch(file.url)
+                    .then(response => response.json())
+                    .then(data => {
+                        const sourceId = `geojson-source-${index}`;
+                        map.addSource(sourceId, { type: 'geojson', data: data });
 
-    // スタイルファイルを読み込んでレイヤーを追加
-    fetch('./styles.json')
-        .then(response => response.json())
-        .then(styleData => {
-            styleData.layers.forEach(layer => {
-                layer.source = 'geojson-source'; // 各レイヤーにソースを指定
-                map.addLayer(layer);
+                        // それぞれのファイルに対応するレイヤーを追加
+                        const layerOptions = {
+                            "polygon-layer": {
+                                "type": "fill",
+                                "source": sourceId,
+                                "paint": {
+                                    "fill-color": "rgba(0, 0, 0, 0)",
+                                    "fill-outline-color": "#000000"
+                                }
+                            },
+                            "line-layer": {
+                                "type": "line",
+                                "source": sourceId,
+                                "paint": {
+                                    "line-color": ["get", "色"],
+                                    "line-width": 3,
+                                    "line-opacity": 0.8
+                                },
+                                "layout": {
+                                    "line-cap": "round",
+                                    "line-join": "round"
+                                }
+                            },
+                            "point-layer": {
+                                "type": "circle",
+                                "source": sourceId,
+                                "paint": {
+                                    "circle-radius": 6,
+                                    "circle-color": "#ff0000",
+                                    "circle-stroke-width": 3,
+                                    "circle-stroke-color": "#ffffff"
+                                }
+                            }
+                        };
+
+                        // 適切なレイヤーを追加
+                        if (layerOptions[file.layerId]) {
+                            map.addLayer(layerOptions[file.layerId]);
+                        }
+                    })
+                    .catch(error => console.error(`GeoJSONファイルの読み込みに失敗しました: ${file.url}`, error));
             });
-        })
-        .catch(error => console.error('スタイルファイルの読み込みに失敗しました:', error));
-});
+        });
     </script>
 </body>
 </html>
