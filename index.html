@@ -29,7 +29,7 @@
         map.on('load', () => {
 
             // 1. Polygon GeoJSON Layer
-            fetch('./東京都（本島のみ）_行政区域_4326v2.geojson') // ファイルパスを変更してください
+            fetch('./東京都（本島のみ）_行政区域_4326v2.geojson') // ファイルパスを適切に指定してください
                 .then(response => response.json())
                 .then(data => {
                     map.addSource('polygon-source', { type: 'geojson', data: data });
@@ -38,8 +38,8 @@
                         type: 'fill',
                         source: 'polygon-source',
                         paint: {
-                            'fill-color': '#f0a', // 塗りつぶし色
-                            'fill-outline-color': '#000000' // 境界線の色
+                            'fill-color': '#f0a',
+                            'fill-outline-color': '#000000'
                         }
                     });
 
@@ -49,19 +49,19 @@
                         type: 'line',
                         source: 'polygon-source',
                         paint: {
-                            'line-color': '#000000',      // 境界線の色
-                            'line-width': 5               // 境界線の太さ
+                            'line-color': '#000000',
+                            'line-width': 5
                         },
                         layout: {
-                            'line-cap': 'round',          // 線の端を丸める
-                            'line-join': 'round'          // 線の角を丸める
+                            'line-cap': 'round',
+                            'line-join': 'round'
                         }
                     });
                 })
                 .catch(error => console.error('Polygon GeoJSONの読み込みに失敗しました:', error));
 
             // 2. Line GeoJSON Layer
-            fetch('./東京都_路線_R5_4326v4.geojson') // ファイルパスを変更してください
+            fetch('./東京都_路線_R5_4326v4.geojson') // ファイルパスを適切に指定してください
                 .then(response => response.json())
                 .then(data => {
                     map.addSource('line-source', { type: 'geojson', data: data });
@@ -70,7 +70,7 @@
                         type: 'line',
                         source: 'line-source',
                         paint: {
-                            'line-color': ['get', '色' ], // "色" プロパティに基づく色
+                            'line-color': ['get', '色' ],
                             'line-width': 3,
                             'line-opacity': 0.8
                         },
@@ -83,7 +83,7 @@
                 .catch(error => console.error('Line GeoJSONの読み込みに失敗しました:', error));
 
             // 3. Point GeoJSON Layer
-            fetch('./東京駅_集客施設_4326.geojson') // ファイルパスを変更してください
+            fetch('./東京駅_集客施設_4326.geojson') // ファイルパスを適切に指定してください
                 .then(response => response.json())
                 .then(data => {
                     map.addSource('point-source', { type: 'geojson', data: data });
