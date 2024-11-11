@@ -35,56 +35,29 @@
 
        
         // 地図の読み込みが完了したらGeoJSONデータを追加
-  map.on('load', () => {
-            geoJsonFiles.forEach((file, index) => {
-                fetch(file.url)
-                    .then(response => response.json())
-                    .then(data => {
-                        const sourceId = `geojson-source-${index}`;
-                        map.addSource(sourceId, { type: 'geojson', data: data });
-
-                        // それぞれのファイルに対応するレイヤーを追加
-                        const layerOptions = {
-                            "polygon-layer": {
-                                "type": "fill",
-                                "source": sourceId,
-                                "paint": {
-                                    "fill-color": "rgba(0, 0, 0, 0)",
-                                    "fill-outline-color": "#000000"
-                                }
-                            },
-                            "line-layer": {
-                                "type": "line",
-                                "source": sourceId,
-                                "paint": {
-                                    "line-color": ["get", "色"],
-                                    "line-width": 3,
-                                    "line-opacity": 0.8
-                                },
-                                "layout": {
-                                    "line-cap": "round",
-                                    "line-join": "round"
-                                }
-                            },
-                            "point-layer": {
-                                "type": "circle",
-                                "source": sourceId,
-                                "paint": {
-                                    "circle-radius": 6,
-                                    "circle-color": "#ff0000",
-                                    "circle-stroke-width": 3,
-                                    "circle-stroke-color": "#ffffff"
-                                }
-                            }
-                        };
-
-                        // 適切なレイヤーを追加
-                        if (layerOptions[file.layerId]) {
-                            map.addLayer(layerOptions[file.layerId]);
-                        }
-                    })
-                    .catch(error => console.error(`GeoJSONファイルの読み込みに失敗しました: ${file.url}`, error));
-            });
+ map.on('load', () => {
+            // 追加のスタイルファイルを読み込んでカスタムレイヤーを追加
+            fetch('./地図スタイル.json')
+                .then(response => response.json())
+                .then(styleData => {
+                    // custom-styles.jsonの各レイヤーを順に追加
+                    styleData.layers.forEach(layer => {
+                        // 各レイヤーのsourceを適切に設定
+                        map.addSource(layer.source, {
+                            type: 'geojson',
+                            data: layer.data // 各レイヤーのGeoJSONデータを指定
+                        });
+                        // レイヤーを追加
+                        map.addLayer({
+                            'id': layer.id,
+                            'type': layer.type,
+                            'source': layer.source,
+                            'paint': layer.paint,
+                            'layout': layer.layout
+                        });
+                    });
+                })
+                .catch(error => console.error('カスタムスタイルの読み込みに失敗しました:', error));
         });
     </script>
 </body>
