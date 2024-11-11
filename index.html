@@ -36,18 +36,12 @@
         // 地図の読み込みが完了したらGeoJSONデータを追加
         map.on('load', () => {
     geoJsonFiles.forEach((file, index) => {
-        fetch(file.url)
-            .then(response => {
-                if (!response.ok) throw new Error(`Network response was not ok: ${response.statusText}`);
-                return response.json();
-            })
-           .then(data => {
-                const sourceId = `data-source-${index}`;
-                map.addSource(sourceId, {
-                    type: 'geojson',
-                    data: data
-                });
-
+        fetch('./地図スタイル.json')
+            .then(response => response.json())
+            .then(styleData =>{
+                styleData.layers.forEach((layer,index)=>{
+                    const sourceIs = `source-${index}`;
+                    map.addSource(sourceId,{type:'geojson',data:'./地図スタイル.json'});
                 if (file.type === 'polygon') {
                     // ポリゴンレイヤー
                     map.addLayer({
