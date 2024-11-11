@@ -1,20 +1,17 @@
-
 {
-    "layers":[
+    "layers": [
         {
-            "type": "polygon",
-            "color":"#FF0000"
+            "type": "line",
+            "id": "rail-line",
+            "color": "#ffffff",
+            "underLineColor": "#000000",
+            "lineWidth": 5,
+            "dashPattern": [2, 3]
         },
         {
-            "type":"line",
-            "color":"#0000FF",
-            "lineWidth":3
-        },
-        {
-            "type":"point",
-            "color":"#0000FF",
-            "pointWidth":4
+            "type": "point",
+            "id": "station-point",
+            "color": "#FF0000"
         }
-
     ]
 }
