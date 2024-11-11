@@ -29,7 +29,7 @@
         map.on('load', () => {
 
             // 1. Polygon GeoJSON Layer
-            fetch('./東京都_駅_4326v3.geojson') // ファイルパスを適切に指定してください
+            fetch('./東京都_駅_4326_4.geojson') // ファイルパスを適切に指定してください
                 .then(response => {
                     if (!response.ok) throw new Error('Network response was not ok');
                     return response.json();
