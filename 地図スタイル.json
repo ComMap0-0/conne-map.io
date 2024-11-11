@@ -1,4 +1,11 @@
-{
+  {
+    "version": 8,
+    "sources": {
+        "geojson-source": {
+            "type": "geojson",
+            "data": "./東京都_路線_R5_4326v4.geojson"  
+        }
+    },
     "layers": [
         {
             "id": "polygon-layer",
@@ -9,14 +16,7 @@
                 "fill-outline-color": "#000000"
             }
         },
-        {
-    "version": 8,
-    "sources": {
-        "geojson-source": {
-            "type": "geojson",
-            "data": "./東京都_路線_R5_4326v4.geojson"  
-        }
-    },
+      
         {
             "id": "line-layer",
             "type": "line",
