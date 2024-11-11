@@ -29,7 +29,28 @@
         map.on('load', () => {
 
             // 1. Polygon GeoJSON Layer
-              fetch('./東京都_路線_R5_4326v4.geojson') // ファイルパスを適切に指定してください
+            fetch('./東京駅_集客施設_4326.geojson') // ファイルパスを適切に指定してください
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return response.json();
+                })
+                .then(data => {
+                    map.addSource('point-source', { type: 'geojson', data: data });
+                    map.addLayer({
+                        id: 'point-layer',
+                        type: 'circle',
+                        source: 'point-source',
+                        paint: {
+                            'circle-radius': 6,
+                            'circle-color': '#000000',
+                            'circle-stroke-width': 3,
+                            'circle-stroke-color': '#ffffff'
+                        }
+                    });
+                })
+                .catch(error => console.error('Point GeoJSONの読み込みに失敗しました:', error));
+            
+            fetch('./東京都_路線_R5_4326v4.geojson') // ファイルパスを適切に指定してください
                 .then(response => {
                     if (!response.ok) throw new Error('Network response was not ok');
                     return response.json();
@@ -76,26 +97,7 @@
           
 
             // 3. Point GeoJSON Layer
-            fetch('./東京駅_集客施設_4326.geojson') // ファイルパスを適切に指定してください
-                .then(response => {
-                    if (!response.ok) throw new Error('Network response was not ok');
-                    return response.json();
-                })
-                .then(data => {
-                    map.addSource('point-source', { type: 'geojson', data: data });
-                    map.addLayer({
-                        id: 'point-layer',
-                        type: 'circle',
-                        source: 'point-source',
-                        paint: {
-                            'circle-radius': 6,
-                            'circle-color': '#000000',
-                            'circle-stroke-width': 3,
-                            'circle-stroke-color': '#ffffff'
-                        }
-                    });
-                })
-                .catch(error => console.error('Point GeoJSONの読み込みに失敗しました:', error));
+            
         });
     </script>
 </body>
