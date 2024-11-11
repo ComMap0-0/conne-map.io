@@ -48,10 +48,33 @@
                         paint: {
                             'fill-color': 'rgba(0, 0, 0, 0)',
                             'fill-outline-color': '#000000',
-                            'fill-outline-width':5
                         }
                     });
                 });
+
+                   map.addLayer({
+                       id:'poligon-outline-layer',
+                       tyoe:'line',
+                       source: 'polygon-layer',
+                       point:{
+                           'line-color':'#000000',
+                           'line-width':5
+                       },
+                       layout{
+                           'line-cap':'round',
+                           'line-join':'round'
+                       }
+                       
+
+
+
+
+
+
+
+
+                       
+                   });
 
             // 2. Line GeoJSON Layer
             fetch('./東京都_路線_R5_4326v4.geojson')
