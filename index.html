@@ -36,36 +36,27 @@
         const syoleJsonFile = './地図スタイル.json';
 
         // 地図の読み込みが完了したらGeoJSONデータを追加
-        map.on('load', () => {
-            map.addSource('geojson-source',{
+       map.on('load', () => {
+            // GeoJSONデータソースを追加
+            map.addSource('geojson-source', {
                 type: 'geojson',
-                data:geoJsonUrl
+                data: geoJsonUrl
             });
-            
+
+            // スタイル設定ファイルを読み込んで適用
             fetch(styleJsonUrl)
-            .then(response => response.json())
-            .then(styleData =>{
-                styleData.layers.forEach((layer,index)=>{
-                    
-                if (file.type === 'polygon') {
-                    // ポリゴンレイヤー
-                    map.addLayer({
-                        id: `polygon-layer-${index}`,
-                        type: 'fill',
-                        source: sourceId,
-                        paint: {
-                            'fill-color': 'rgba(0, 0, 0, 0)',
-                            'fill-outline-color': file.color
-                        }
-                    });
-                     } else if (file.type === 'line') {
-                            // 下の黒線レイヤー（太めの黒線）
+                .then(response => response.json())
+                .then(styleData => {
+                    styleData.layers.forEach((layer, index) => {
+                        if (layer.type === 'line') {
+                            // 下の黒線レイヤー
                             map.addLayer({
                                 id: `line-underlayer-${index}`,
                                 type: 'line',
-                                source: sourceId,
+                                source: 'geojson-source',
                                 paint: {
-                                    'line-color': file.underLineColor || '#000000', // 黒線
+                                    'line-color': layer.underLineColor || '#000000',
+                                    'line-width': (layer.lineWidth || 5) + 2,
                                     'line-opacity': 0.3
                                 },
                                 layout: {
@@ -74,15 +65,15 @@
                                 }
                             });
 
-                            // 上の破線レイヤー（鉄道風の破線）
+                            // 上の破線レイヤー
                             map.addLayer({
                                 id: `line-layer-${index}`,
                                 type: 'line',
-                                source: sourceId,
+                                source: 'geojson-source',
                                 paint: {
-                                    'line-color': file.color || '#ffffff',    // 破線の色
-                                    'line-width': file.lineWidth || 5,         // 破線の太さ
-                                    'line-dasharray': file.dashPattern || [2, 3], // ダッシュパターン
+                                    'line-color': layer.color || '#ffffff',
+                                    'line-width': layer.lineWidth || 5,
+                                    'line-dasharray': layer.dashPattern || [2, 3],
                                     'line-opacity': 0.8
                                 },
                                 layout: {
@@ -90,25 +81,24 @@
                                     'line-join': 'round'
                                 }
                             });
-                } else if (file.type === 'point') {
-                    // ポイントレイヤー
-                    map.addLayer({
-                        id: `point-layer-${index}`,
-                        type: 'circle',
-                        source: sourceId,
-                        paint: {
-                            'circle-radius': 6,
-                            'circle-color': file.color,
-                            'circle-stroke-width': 3,
-                            'circle-stroke-color': '#ffffff'
+                        } else if (layer.type === 'point') {
+                            // ポイントレイヤー
+                            map.addLayer({
+                                id: `point-layer-${index}`,
+                                type: 'circle',
+                                source: 'geojson-source',
+                                paint: {
+                                    'circle-radius': 6,
+                                    'circle-color': layer.color || '#FF0000',
+                                    'circle-stroke-width': 3,
+                                    'circle-stroke-color': '#ffffff'
+                                }
+                            });
                         }
                     });
-            
-                        }
-                    })
-                    .catch(error => console.error(`GeoJSONファイルの読み込みに失敗しました: ${file.url}`, error));
-            });
-        });   
-            </script>
+                })
+                .catch(error => console.error('スタイルファイルの読み込みに失敗しました:', error));
+        });
+    </script>
 </body>
 </html>
