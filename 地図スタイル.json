@@ -14,13 +14,13 @@
             "type": "line",
             "source": "geojson-source",
             "paint": {
-                "line-color": ["get", "line_color"],  // GeoJSONの line_color プロパティを参照
-                "line-width": 3,                      // 線の太さ
-                "line-opacity": 0.8                   // 不透明度
+                "line-color": ["get", "line_color"],  
+                "line-width": 3,                      
+                "line-opacity": 0.8                   
             },
             "layout": {
-                "line-cap": "round",                  // 線の端を丸くする
-                "line-join": "round"                  // 線の角を丸くする
+                "line-cap": "round",                 
+                "line-join": "round"                  
             }
         },
         {
