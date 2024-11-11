@@ -1,17 +1,53 @@
 {
     "layers": [
         {
-            "type": "line",
-            "id": "rail-line",
-            "color": "#ffffff",
-            "underLineColor": "#000000",
-            "lineWidth": 5,
-            "dashPattern": [2, 3]
+            "id": "polygon-layer",
+            "type": "fill",
+            "filter": ["==", ["get", "type"], "polygon"],
+            "paint": {
+                "fill-color": "rgba(0, 0, 0, 0)",
+                "fill-outline-color": "#000000"
+            }
         },
         {
-            "type": "point",
-            "id": "station-point",
-            "color": "#000000"
+            "id": "line-underlayer",
+            "type": "line",
+            "filter": ["==", ["get", "type"], "line"],
+            "paint": {
+                "line-color": "#000000",
+                "line-width": 7,
+                "line-opacity": 0.3
+            },
+            "layout": {
+                "line-cap": "round",
+                "line-join": "round"
+            }
+        },
+        {
+            "id": "line-layer",
+            "type": "line",
+            "filter": ["==", ["get", "type"], "line"],
+            "paint": {
+                "line-color": "#ffffff",
+                "line-width": 5,
+                "line-dasharray": [2, 3],
+                "line-opacity": 0.8
+            },
+            "layout": {
+                "line-cap": "round",
+                "line-join": "round"
+            }
+        },
+        {
+            "id": "point-layer",
+            "type": "circle",
+            "filter": ["==", ["get", "type"], "point"],
+            "paint": {
+                "circle-radius": 6,
+                "circle-color": "#ff0000",
+                "circle-stroke-width": 3,
+                "circle-stroke-color": "#ffffff"
+            }
         }
     ]
 }
