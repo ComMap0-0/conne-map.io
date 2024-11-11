@@ -33,14 +33,13 @@
                         
         ];
 
-        const styleJsonFile = './地図スタイル.json';
-
+       
         // 地図の読み込みが完了したらGeoJSONデータを追加
 map.on('load', () => {
     // GeoJSONデータを追加
     map.addSource('geojson-source', {
         type: 'geojson',
-        data: './data.geojson'  // GeoJSONファイルのパス
+        data: './地図スタイル.json'  // GeoJSONファイルのパス
     });
 
     // スタイルファイルを読み込んでレイヤーを追加
