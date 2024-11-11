@@ -12,10 +12,11 @@
         {
             "id": "line-underlayer",
             "type": "line",
+            "source":"geojson-source",
             "filter": ["==", ["get", "type"], "line"],
             "paint": {
-                "line-color": "#000000",
-                "line-width": 7,
+                "line-color": ["get", "line_color"],
+                "line-width": 3,
                 "line-opacity": 0.3
             },
             "layout": {
