@@ -37,82 +37,22 @@
 
         // 地図の読み込みが完了したらGeoJSONデータを追加
 map.on('load', () => {
-    geoJsonFiles.forEach((file, index) => {
-        fetch(file.url)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`Failed to load ${file.url}: ${response.statusText}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                const sourceId = `source-${index}`;
-                map.addSource(sourceId, {
-                    type: 'geojson',
-                    data: data
-                });
-
-                if (file.type === 'polygon') {
-                    // ポリゴンレイヤー
-                    map.addLayer({
-                        id: `polygon-layer-${index}`,
-                        type: 'fill',
-                        source: sourceId,
-                        paint: {
-                            'fill-color': 'rgba(0, 0, 0, 0)',
-                            'fill-outline-color': file.color
-                        }
-                    });
-                } else if (file.type === 'line') {
-                    // 下の黒線レイヤー（太めの黒線）
-                    map.addLayer({
-                        id: `line-underlayer-${index}`,
-                        type: 'line',
-                        source: sourceId,
-                        paint: {
-                            'line-color': file.underLineColor || '#000000',
-                            'line-width': (file.lineWidth || 5) + 2,
-                            'line-opacity': 0.3
-                        },
-                        layout: {
-                            'line-cap': 'round',
-                            'line-join': 'round'
-                        }
-                    });
-
-                    // 上の破線レイヤー（鉄道風の破線）
-                    map.addLayer({
-                        id: `line-layer-${index}`,
-                        type: 'line',
-                        source: sourceId,
-                        paint: {
-                            'line-color': file.color || '#ffffff',
-                            'line-width': file.lineWidth || 5,
-                            'line-dasharray': file.dashPattern || [2, 3],
-                            'line-opacity': 0.8
-                        },
-                        layout: {
-                            'line-cap': 'round',
-                            'line-join': 'round'
-                        }
-                    });
-                } else if (file.type === 'point') {
-                    // ポイントレイヤー
-                    map.addLayer({
-                        id: `point-layer-${index}`,
-                        type: 'circle',
-                        source: sourceId,
-                        paint: {
-                            'circle-radius': 6,
-                            'circle-color': file.color,
-                            'circle-stroke-width': 3,
-                            'circle-stroke-color': '#ffffff'
-                        }
-                    });
-                }
-            })
-            .catch(error => console.error(`Error loading GeoJSON file: ${error.message}`));
+    // GeoJSONデータを追加
+    map.addSource('geojson-source', {
+        type: 'geojson',
+        data: './data.geojson'  // GeoJSONファイルのパス
     });
+
+    // スタイルファイルを読み込んでレイヤーを追加
+    fetch('./styles.json')
+        .then(response => response.json())
+        .then(styleData => {
+            styleData.layers.forEach(layer => {
+                layer.source = 'geojson-source'; // 各レイヤーにソースを指定
+                map.addLayer(layer);
+            });
+        })
+        .catch(error => console.error('スタイルファイルの読み込みに失敗しました:', error));
 });
     </script>
 </body>
