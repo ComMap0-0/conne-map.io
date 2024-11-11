@@ -14,7 +14,7 @@
             "type": "line",
             "source": "geojson-source",
             "paint": {
-                "line-color": ["get", "line_color"],  
+                "line-color": ["get", "色"],  
                 "line-width": 3,                      
                 "line-opacity": 0.8                   
             },
