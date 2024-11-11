@@ -64,7 +64,7 @@
                         paint: {
                             'line-color': ['get', '色' ],
                             'line-width': 3,
-                            'line-opacity': 0.8
+                            'line-opacity': 0.5
                         },
                         layout: {
                             'line-cap': 'round',
@@ -90,6 +90,12 @@
                         }
                     });
                 });
+        });
+
+        map.on('click',`faciities-${type}`,(e)=>{
+            const coordinates = e.features[0].geometry.coordinates.slice()
+        }
+               .addTo(map);
         });
     </script>
 </body>
