@@ -44,7 +44,7 @@
             "source": "point-source",
             "paint": {
                 "circle-radius": 6,
-                "circle-color": ["get", "point_color"],
+                "circle-color": "#000000",
                 "circle-stroke-width": 3,
                 "circle-stroke-color": "#ffffff"
             }
