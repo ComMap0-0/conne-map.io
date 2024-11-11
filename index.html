@@ -27,7 +27,40 @@
 
         // 地図の読み込みが完了したらGeoJSONデータを追加
         map.on('load', () => {
-         // 1. Polygon GeoJSON Layer
+
+            // 1. Polygon GeoJSON Layer
+            fetch('./東京都（本島のみ）_行政区域_4326v2.geojson') // ファイルパスを適切に指定してください
+                .then(response => response.json())
+                .then(data => {
+                    map.addSource('polygon-source', { type: 'geojson', data: data });
+                    map.addLayer({
+                        id: 'polygon-fill-layer',
+                        type: 'fill',
+                        source: 'polygon-source',
+                        paint: {
+                            'fill-color': '#f0a',
+                            'fill-outline-color': '#000000'
+                        }
+                    });
+
+                    // 境界線を表すラインレイヤー
+                    map.addLayer({
+                        id: 'polygon-outline-layer',
+                        type: 'line',
+                        source: 'polygon-source',
+                        paint: {
+                            'line-color': '#000000',
+                            'line-width': 5
+                        },
+                        layout: {
+                            'line-cap': 'round',
+                            'line-join': 'round'
+                        }
+                    });
+                })
+                .catch(error => console.error('Polygon GeoJSONの読み込みに失敗しました:', error));
+
+            // 2. Line GeoJSON Layer
             fetch('./東京都_路線_R5_4326v4.geojson') // ファイルパスを適切に指定してください
                 .then(response => response.json())
                 .then(data => {
@@ -47,33 +80,8 @@
                         }
                     });
                 })
-               
+                .catch(error => console.error('Line GeoJSONの読み込みに失敗しました:', error));
 
-            
-            fetch('./東京都（本島のみ）_行政区域_4326v2.geojson') // ファイルパスを適切に指定してください
-                .then(response => response.json())
-                .then(data => {
-                    map.addSource('polygon-source', { type: 'geojson', data: data });
-                                    // 境界線を表すラインレイヤー
-                    map.addLayer({
-                        id: 'polygon-outline-layer',
-                        type: 'line',
-                        source: 'polygon-source',
-                        paint: {
-                            'line-color': '#000000',
-                            'line-width': 3
-                            'line-opacity':0.5
-                        },
-                        layout: {
-                            'line-cap': 'round',
-                            'line-join': 'round'
-                        }
-                    });
-                })
-                .catch(error => console.error('Polygon GeoJSONの読み込みに失敗しました:', error));
-
-            // 2. Line GeoJSON Layer
-            
             // 3. Point GeoJSON Layer
             fetch('./東京駅_集客施設_4326.geojson') // ファイルパスを適切に指定してください
                 .then(response => response.json())
