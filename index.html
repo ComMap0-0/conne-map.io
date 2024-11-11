@@ -50,7 +50,7 @@
                 })
                 .catch(error => console.error('Point GeoJSONの読み込みに失敗しました:', error));
             
-            fetch('./東京都_路線_R5_4326v5.geojson') // ファイルパスを適切に指定してください
+            fetch('./東京都_路線_R5_4326v6.geojson') // ファイルパスを適切に指定してください
                 .then(response => {
                     if (!response.ok) throw new Error('Network response was not ok');
                     return response.json();
