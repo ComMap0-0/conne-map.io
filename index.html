@@ -33,17 +33,7 @@
                 .then(response => response.json())
                 .then(data => {
                     map.addSource('polygon-source', { type: 'geojson', data: data });
-                    map.addLayer({
-                        id: 'polygon-fill-layer',
-                        type: 'fill',
-                        source: 'polygon-source',
-                        paint: {
-                            'fill-color': 'rgba(0, 0, 0, 0)',
-                            'fill-outline-color': '#000000'
-                        }
-                    });
-
-                    // 境界線を表すラインレイヤー
+                                    // 境界線を表すラインレイヤー
                     map.addLayer({
                         id: 'polygon-outline-layer',
                         type: 'line',
