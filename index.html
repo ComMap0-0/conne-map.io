@@ -25,45 +25,43 @@
             zoom: 10  // 初期ズームレベル
         });
 
-    
-        
-       
         // 地図の読み込みが完了したらGeoJSONデータを追加
-       map.on('load', () => {
+        map.on('load', () => {
+
             // 1. Polygon GeoJSON Layer
-                map.addSource('polygon-source', {
-                    type: 'geojson',
-                    data: './/東京都（本島のみ）_行政区域_4326v2.geojson' 
-                        });
-                   map.addLayer({
+            fetch('./東京都（本島のみ）_行政区域_4326v2.geojson') // ファイルパスを変更してください
+                .then(response => response.json())
+                .then(data => {
+                    map.addSource('polygon-source', { type: 'geojson', data: data });
+                    map.addLayer({
                         id: 'polygon-fill-layer',
                         type: 'fill',
                         source: 'polygon-source',
                         paint: {
-                        'fill-color': '#f0a', // 完全に透明
-                        'fill-outline-color': '0.5' // 透明にして線レイヤーに委ねる
+                            'fill-color': '#f0a', // 塗りつぶし色
+                            'fill-outline-color': '#000000' // 境界線の色
                         }
-                        });
+                    });
 
-        // 2. 境界線を表すラインレイヤー
+                    // 境界線を表すラインレイヤー
                     map.addLayer({
                         id: 'polygon-outline-layer',
                         type: 'line',
                         source: 'polygon-source',
                         paint: {
-                        'line-color': '#000000',      // 境界線の色を設定
-                        'line-width': 5               // 境界線の太さを指定
+                            'line-color': '#000000',      // 境界線の色
+                            'line-width': 5               // 境界線の太さ
                         },
                         layout: {
-                        'line-cap': 'round',          // 線の端を丸める
-                        'line-join': 'round'          // 線の角を丸める
-                                }
-                            });
-                        })
-                        .catch(error => console.error('Polygon GeoJSONの読み込みに失敗しました:', error));
+                            'line-cap': 'round',          // 線の端を丸める
+                            'line-join': 'round'          // 線の角を丸める
+                        }
+                    });
+                })
+                .catch(error => console.error('Polygon GeoJSONの読み込みに失敗しました:', error));
 
             // 2. Line GeoJSON Layer
-            fetch('./東京都_路線_R5_4326v4.geojson')
+            fetch('./東京都_路線_R5_4326v4.geojson') // ファイルパスを変更してください
                 .then(response => response.json())
                 .then(data => {
                     map.addSource('line-source', { type: 'geojson', data: data });
@@ -72,9 +70,9 @@
                         type: 'line',
                         source: 'line-source',
                         paint: {
-                            'line-color': ['get', '色' ],
+                            'line-color': ['get', '色' ], // "色" プロパティに基づく色
                             'line-width': 3,
-                            'line-opacity': 0.3
+                            'line-opacity': 0.8
                         },
                         layout: {
                             'line-cap': 'round',
@@ -82,9 +80,10 @@
                         }
                     });
                 })
-                 .catch(error => console.error('Line GeoJSONの読み込みに失敗しました:', error));
+                .catch(error => console.error('Line GeoJSONの読み込みに失敗しました:', error));
+
             // 3. Point GeoJSON Layer
-            fetch('./東京駅_集客施設_4326.geojson')
+            fetch('./東京駅_集客施設_4326.geojson') // ファイルパスを変更してください
                 .then(response => response.json())
                 .then(data => {
                     map.addSource('point-source', { type: 'geojson', data: data });
@@ -99,8 +98,8 @@
                             'circle-stroke-color': '#ffffff'
                         }
                     });
-                });
-          .catch(error => console.error('Point GeoJSONの読み込みに失敗しました:', error));
+                })
+                .catch(error => console.error('Point GeoJSONの読み込みに失敗しました:', error));
         });
     </script>
 </body>
