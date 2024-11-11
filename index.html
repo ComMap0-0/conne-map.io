@@ -41,18 +41,17 @@
                 .then(response => response.json())
                 .then(data => {
                     map.addSource('polygon-source', { type: 'geojson', data: data });
-                    map.addLayer({
-                       id: 'polygon-fill-layer',
-                       type: 'fill',
-                       source: 'polygon-source',
-                       paint: {
-                       'fill-color': 'rgba(0, 0, 0, 0)', // 完全に透明
+                   map.addLayer({
+                        id: 'polygon-fill-layer',
+                        type: 'fill',
+                        source: 'polygon-source',
+                        paint: {
+                        'fill-color': 'rgba(0, 0, 0, 0)', // 完全に透明
                         'fill-outline-color': 'rgba(0, 0, 0, 0)' // 透明にして線レイヤーに委ねる
                         }
-                        
                         });
 
-                    // 2. 境界線を表すラインレイヤー
+// 2. 境界線を表すラインレイヤー
                     map.addLayer({
                         id: 'polygon-outline-layer',
                         type: 'line',
@@ -65,8 +64,7 @@
                         'line-cap': 'round',          // 線の端を丸める
                         'line-join': 'round'          // 線の角を丸める
                         }
-                        });    
-                    });
+                        });
 
             // 2. Line GeoJSON Layer
             fetch('./東京都_路線_R5_4326v4.geojson')
