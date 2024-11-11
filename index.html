@@ -74,7 +74,7 @@
                 })
                 .catch(error => console.error('Line GeoJSONの読み込みに失敗しました:', error));
             
-            fetch('./東京都（本島のみ）_行政区域_4326v2.geojson') // ファイルパスを適切に指定してください
+           /* fetch('./東京都（本島のみ）_行政区域_4326v2.geojson') // ファイルパスを適切に指定してください
                 .then(response => {
                     if (!response.ok) throw new Error('Network response was not ok');
                     return response.json();
@@ -93,10 +93,7 @@
                 })
                 .catch(error => console.error('Polygon GeoJSONの読み込みに失敗しました:', error));
 
-            // 2. Line GeoJSON Layer
-          
-
-            // 3. Point GeoJSON Layer
+            */
             
         });
     </script>
