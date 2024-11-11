@@ -11,7 +11,7 @@
         {
             "type": "point",
             "id": "station-point",
-            "color": "#FF0000"
+            "color": "#000000"
         }
     ]
 }
