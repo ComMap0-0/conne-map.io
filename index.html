@@ -25,14 +25,8 @@
             zoom: 10  // 初期ズームレベル
         });
 
-        // GeoJSONファイルのリスト (URL、色、タイプを指定)
-        const geoJsonFiles = [
-            { url: './東京都（本島のみ）_行政区域_4326v2.geojson',layerId: 'polygon-layer'},
-            { url: './東京都_路線_R5_4326v4.geojson', layerId: 'line-layer'},
-            { url: './東京駅_集客施設_4326.geojson', layerId: 'point-layer' }
-                        
-        ];
-
+    
+        
        
         // 地図の読み込みが完了したらGeoJSONデータを追加
        map.on('load', () => {
@@ -65,7 +59,8 @@
                         'line-join': 'round'          // 線の角を丸める
                                 }
                             });
-                        });
+                        })
+                        .catch(error => console.error('Polygon GeoJSONの読み込みに失敗しました:', error));
 
             // 2. Line GeoJSON Layer
             fetch('./東京都_路線_R5_4326v4.geojson')
@@ -86,8 +81,8 @@
                             'line-join': 'round'
                         }
                     });
-                });
-
+                })
+                 .catch(error => console.error('Line GeoJSONの読み込みに失敗しました:', error));
             // 3. Point GeoJSON Layer
             fetch('./東京駅_集客施設_4326.geojson')
                 .then(response => response.json())
@@ -105,9 +100,8 @@
                         }
                     });
                 });
-        
-
-       
+          .catch(error => console.error('Point GeoJSONの読み込みに失敗しました:', error));
+        });
     </script>
 </body>
 </html>
