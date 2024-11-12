@@ -25,19 +25,18 @@
             zoom: 10  // 初期ズームレベル
         });
 
-        // 地図の読み込みが完了したらGeoJSONデータを追加
-       const geoJsonUrl = './東京都_公園_2011年度（平成23年年度）.geojson'; // 公園のGeoJSONファイルのパス
+        // GeoJSONファイルとアイコン画像のパス
+        const polygonGeoJsonUrl = './東京都（本島のみ）_行政区域_4326v2.geojson';
+        const lineGeoJsonUrl = './東京都_路線_R5_4326v6.geojson';
+        const pointGeoJsonUrl = './東京都_公園_2011年度（平成23年年度）.geojson';
         const iconUrl = './公園アイコン.png';  // アイコン画像のパス
-        
+
+        // 地図の読み込みが完了したらGeoJSONデータを追加
         map.on('load', () => {
 
-            
-            
-          fetch('./東京都（本島のみ）_行政区域_4326v2.geojson') 
-                .then(response => {
-                    if (!response.ok) throw new Error('Network response was not ok');
-                    return response.json();
-                })
+            // 1. Polygon GeoJSON Layer
+            fetch(polygonGeoJsonUrl)
+                .then(response => response.json())
                 .then(data => {
                     map.addSource('polygon-source', { type: 'geojson', data: data });
                     map.addLayer({
@@ -52,11 +51,9 @@
                 })
                 .catch(error => console.error('Polygon GeoJSONの読み込みに失敗しました:', error));
 
-            fetch('./東京都_路線_R5_4326v6.geojson') 
-                .then(response => {
-                    if (!response.ok) throw new Error('Network response was not ok');
-                    return response.json();
-                })
+            // 2. Line GeoJSON Layer
+            fetch(lineGeoJsonUrl)
+                .then(response => response.json())
                 .then(data => {
                     map.addSource('line-source', { type: 'geojson', data: data });
                     map.addLayer({
@@ -76,58 +73,31 @@
                 })
                 .catch(error => console.error('Line GeoJSONの読み込みに失敗しました:', error));
 
-          map.loadImage(iconUrl,()  
-            fetch('./東京都_駅_4326_4.geojson')
-                .then(response => {
-                    if (!response.ok) throw new Error('Network response was not ok');
-                    return response.json();
-                })
-                .then(data => {
-                    map.addSource('point-source', { type: 'geojson', data: data });
-                    map.addLayer({
-                        id: 'point-layer',
-                        type: 'circle',
-                        source: 'point-source',
-                        paint: {
-                            'circle-radius': 6,
-                            'circle-color': '#ffffff',
-                            'circle-stroke-width': 3,
-                            'circle-stroke-color': '#000000'
-                        }
-                    });
-                })
-                .catch(error => console.error('Point GeoJSONの読み込みに失敗しました:', error));
-
-                       map.loadImage(iconUrl, (error, image) => {
+            // 3. Point GeoJSON Layer (画像アイコンのポイント)
+            map.loadImage(iconUrl, (error, image) => {
                 if (error) throw error;
                 map.addImage('park-icon', image);
 
-                // GeoJSONデータの追加
-                fetch(geoJsonUrl)
+                fetch(pointGeoJsonUrl)
                     .then(response => response.json())
                     .then(data => {
-                        map.addSource('parks', {
-                            type: 'geojson',
-                            data: data
-                        });
-
-                        // 公園データのポイントレイヤを画像アイコンで表示
+                        map.addSource('point-source', { type: 'geojson', data: data });
                         map.addLayer({
-                            id: 'parks-layer',
+                            id: 'point-layer',
                             type: 'symbol',
-                            source: 'parks',
+                            source: 'point-source',
                             layout: {
-                                'icon-image': 'park-icon',  // 読み込んだアイコンを指定
-                                'icon-size': 0.5,           // アイコンのサイズ
-                                'icon-allow-overlap': true  // アイコンが重なっても表示
+                                'icon-image': 'park-icon',
+                                'icon-size': 0.5,
+                                'icon-allow-overlap': true
                             }
                         });
-                         map.on('click', 'parks-layer', (e) => {
+
+                        // ポイントをクリックしたときのポップアップ
+                        map.on('click', 'point-layer', (e) => {
                             const coordinates = e.features[0].geometry.coordinates.slice();
                             const properties = e.features[0].properties;
-
-                            // GeoJSONデータ内の公園名プロパティを取得（例：'公園名'）
-                            const parkName = properties.公園名 || '公園';
+                            const parkName = properties['公園名'] || '公園';
 
                             // ポップアップの作成と表示
                             new maplibregl.Popup()
@@ -136,21 +106,17 @@
                                 .addTo(map);
                         });
 
-                        // マウスカーソルをポイント上でポインタに変更
-                        map.on('mouseenter', 'parks-layer', () => {
+                        // マウスオーバーでカーソルをポインタに変更
+                        map.on('mouseenter', 'point-layer', () => {
                             map.getCanvas().style.cursor = 'pointer';
                         });
-
-                        // マウスがポイントを離れたらカーソルを元に戻す
-                        map.on('mouseleave', 'parks-layer', () => {
+                        map.on('mouseleave', 'point-layer', () => {
                             map.getCanvas().style.cursor = '';
                         });
                     })
-                    .catch(error => console.error('GeoJSONの読み込みに失敗しました:', error));
+                    .catch(error => console.error('Point GeoJSONの読み込みに失敗しました:', error));
             });
         });
     </script>
 </body>
 </html>
-                        
-  
