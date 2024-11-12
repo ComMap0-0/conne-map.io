@@ -26,6 +26,9 @@
         });
 
         // 地図の読み込みが完了したらGeoJSONデータを追加
+       const geoJsonUrl = './東京都_公園_2011年度（平成23年年度）.geojson'; // 公園のGeoJSONファイルのパス
+        const iconUrl = './公園アイコン.png';  // アイコン画像のパス
+        
         map.on('load', () => {
 
             
@@ -73,6 +76,7 @@
                 })
                 .catch(error => console.error('Line GeoJSONの読み込みに失敗しました:', error));
 
+          map.loadImage(iconUrl,()  
             fetch('./東京都_駅_4326_4.geojson')
                 .then(response => {
                     if (!response.ok) throw new Error('Network response was not ok');
@@ -93,9 +97,67 @@
                     });
                 })
                 .catch(error => console.error('Point GeoJSONの読み込みに失敗しました:', error));
+            
+            map.on('load', () => {
+            // アイコン画像を読み込む
+            map.loadImage(iconUrl, (error, image) => {
+                if (error) throw error;
+                map.addImage('park-icon', image); // アイコンをマップに追加
 
-            
-            
+                // GeoJSONデータの追加
+                fetch(geoJsonUrl)
+                    .then(response => response.json())
+                    .then(data => {
+                        // ソースとしてGeoJSONを追加
+                        map.addSource('parks', {
+                            type: 'geojson',
+                            data: data
+                        });
+
+                        // レイヤとしてポイントを追加（画像アイコンを使用）
+                        map.addLayer({
+                            id: 'parks-layer',
+                            type: 'symbol',
+                            source: 'parks',
+                            layout: {
+                                'icon-image': 'park-icon', // 画像アイコンを指定
+                                'icon-size': 0.5,          // アイコンのサイズ
+                                'icon-allow-overlap': true // アイコンが重なっても表示
+                            }
+                        });
+
+                        // クリックイベントを設定
+                        map.on('click', 'parks-layer', (e) => {
+                            const coordinates = e.features[0].geometry.coordinates.slice();
+                            const properties = e.features[0].properties;
+                            
+                            // 公園名を取得
+                            const parkName = properties.公園名;
+                    
+                            
+                            // ポップアップの作成
+                            new maplibregl.Popup()
+                                .setLngLat(coordinates)
+                                .setHTML(`
+                                    <div>
+                                        <h3>${parkName}</h3>
+                                       
+                                    </div>
+                                `)
+                                .addTo(map);
+                        });
+
+                        // マウスオーバーでカーソルをポインタに変更
+                        map.on('mouseenter', 'parks-layer', () => {
+                            map.getCanvas().style.cursor = 'pointer';
+                        });
+
+                        map.on('mouseleave', 'parks-layer', () => {
+                            map.getCanvas().style.cursor = '';
+                        });
+                    })
+                    .catch(error => console.error('GeoJSONの読み込みに失敗しました:', error));
+            });
         });
     </script>
 </body>
