@@ -126,8 +126,33 @@
                     'circle-color': '#ffffff' // 塗りつぶし色
                 }
             });
-        })
-    .catch(error => console.error('ポイント GeoJSONの読み込みに失敗しました:', error));
+        
+         // 駅ポイントをクリックしたときのポップアップ
+                         map.on('click', 'point1-fill-layer', (e) => {
+                            const StCoordinates = e.features[0].geometry.coordinates.slice();
+                            const StProperties = e.features[0].properties;
+                            const StName = properties['駅名'] || '駅';
+
+                            // ポップアップの作成と表示
+                            new maplibregl.Popup()
+                                .setLngLat(StCoordinates)
+                                .setHTML(`<div><h3>${StName}</h3></div>`)
+                                .addTo(map);
+                        });
+
+                      
+
+                        // マウスオーバーでカーソルをポインタに変更
+                        map.on('mouseenter', 'point1-fill-layer', () => {
+                            map.getCanvas().style.cursor = 'pointer';
+                        });
+                        map.on('mouseleave', 'point1-fill-layer', () => {
+                            map.getCanvas().style.cursor = '';
+                        });
+                    })
+                    .catch(error => console.error(' GeoJSONの読み込みに失敗しました:', error));
+        
+ 
 
             // 3. 公園 GeoJSON Layer (画像アイコンのポイント)
             map.loadImage(iconUrl, (error, image) => {
