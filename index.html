@@ -35,22 +35,7 @@
         // 地図の読み込みが完了したらGeoJSONデータを追加
         map.on('load', () => {
 
-            // 1. polygon GeoJSON Layer
-            fetch(polygonGeoJsonUrl)
-                .then(response => response.json())
-                .then(data => {
-                    map.addSource('polygon-source', { type: 'geojson', data: data });
-                    map.addLayer({
-                        id: 'polygon-outline-layer',
-                        type: 'line',
-                        source: 'polygon-source',
-                        paint: {
-                            'line-color': '#000000',
-                            'line-width': 2
-                        }
-                    });
-                })
-                .catch(error => console.error('Polygon GeoJSONの読み込みに失敗しました:', error));
+            
 
             // 1. 駅ポイント GeoJSON Layer
             // ポイント GeoJSON Layer
@@ -68,8 +53,8 @@
                     paint: {
                 'circle-radius': 8, // ポイントの大きさ（外枠のため少し大きめに設定）
                 'circle-color': '#000000', // 外枠の色
-            }
-        });
+                }
+            });
 
         // ポイントの塗りつぶし（fill）を設定
                 map.addLayer({
@@ -79,9 +64,9 @@
                     paint: {
                     'circle-radius': 6, // 塗りつぶしの半径（外枠より小さくする）
                     'circle-color': '#ffffff' // 塗りつぶし色
-            }
-        });
-    })
+                }
+            });
+        })
     .catch(error => console.error('ポイント GeoJSONの読み込みに失敗しました:', error));
 
 
@@ -112,14 +97,14 @@
             map.on('click', 'line-layer', (e) => {
             const lineCoordinates = e.lngLat; // クリックされた位置の座標を取得
             const lineProperties = e.features[0].properties;
-            const lineName = lineProperties['路線名'] || '路線';
+            const lineName = lineProperties['●名'] || '●';
 
             // ポップアップの作成と表示
             new maplibregl.Popup()
                 .setLngLat(lineCoordinates)
                 .setHTML(`<div><h3>${lineName}</h3></div>`)
                 .addTo(map);
-        });
+             });
 
         // マウスオーバーでカーソルをポインタに変更
             map.on('mouseenter', 'line-layer', () => {
@@ -127,9 +112,10 @@
             });
             map.on('mouseleave', 'line-layer', () => {
             map.getCanvas().style.cursor = '';
-        });
-    })
+                });
+            })
             .catch(error => console.error('Line GeoJSONの読み込みに失敗しました:', error));
+        
 
 
             // 3. Point GeoJSON Layer (画像アイコンのポイント)
@@ -179,6 +165,22 @@
 
                     
             });
+            // 1. polygon GeoJSON Layer
+            fetch(polygonGeoJsonUrl)
+                .then(response => response.json())
+                .then(data => {
+                    map.addSource('polygon-source', { type: 'geojson', data: data });
+                    map.addLayer({
+                        id: 'polygon-outline-layer',
+                        type: 'line',
+                        source: 'polygon-source',
+                        paint: {
+                            'line-color': '#000000',
+                            'line-width': 2
+                        }
+                    });
+                })
+                .catch(error => console.error('Polygon GeoJSONの読み込みに失敗しました:', error));
         });
     </script>
 </body>
