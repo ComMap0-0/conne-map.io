@@ -131,7 +131,7 @@
                          map.on('click', 'point1-fill-layer', (e) => {
                             const StCoordinates = e.features[0].geometry.coordinates.slice();
                             const StProperties = e.features[0].properties;
-                            const StName = properties['駅名'] || '駅名';
+                            const StName = StProperties['駅名'] || '駅名';
 
                             // ポップアップの作成と表示
                             new maplibregl.Popup()
