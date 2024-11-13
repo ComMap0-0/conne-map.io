@@ -26,15 +26,16 @@
         });
 
         // GeoJSONファイルとアイコン画像のパス
-        const polygonGeoJsonUrl = './東京都（本島のみ）_行政区域_4326v2.geojson';
-        const lineGeoJsonUrl = './東京都_路線_R5_4326v6.geojson';
-        const pointGeoJsonUrl = './東京都_公園_2011年度（平成23年年度）.geojson';
+        const polygonGeoJsonUrl = './東京都（本島のみ）_行政区域_4326v2.geojson';//行政区域
+        const lineGeoJsonUrl = './東京都_路線_R5_4326v6.geojson';//鉄道路線
+        const pointGeoJsonUrl = './東京都_公園_2011年度（平成23年年度）.geojson';//公園ポイント
         const iconUrl = './公園アイコン.png';  // アイコン画像のパス
+        const point1GeoJsonUrl = './東京都_駅_4326_4.geojson'//東京駅ポイント;
 
         // 地図の読み込みが完了したらGeoJSONデータを追加
         map.on('load', () => {
 
-            // 1. Polygon GeoJSON Layer
+            // 1. polygon GeoJSON Layer
             fetch(polygonGeoJsonUrl)
                 .then(response => response.json())
                 .then(data => {
@@ -50,6 +51,35 @@
                     });
                 })
                 .catch(error => console.error('Polygon GeoJSONの読み込みに失敗しました:', error));
+
+            // 1. 駅ポイント GeoJSON Layer
+            fetch(point1GeoJsonUrl)
+                .then(response => response.json())
+                .then(data => {
+                    map.addSource('point1-source', { type: 'geojson', data: data });
+                    map.addLayer({
+                        id: 'point1-outline-layer',
+                        type: 'circle',
+                        source: 'point1-source',
+                        paint: {
+                            'circle-radius': 5,
+                            'circle-color': '#ffffff',
+                            
+                        }
+                    });
+                   
+                    map.addLayer({
+                        id: 'point1-fill-layer',
+                        type: 'circle',
+                        source: 'point1-source',
+                        paint: {
+                            'circle-radius': 3,
+                            'circle-color': '#ffffff',
+                            
+                        }
+                    });
+                });
+                 .catch(error => console.error('ポイント GeoJSONの読み込みに失敗しました:', error));
 
             // 2. Line GeoJSON Layer
             fetch(lineGeoJsonUrl)
