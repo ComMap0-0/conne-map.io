@@ -112,7 +112,7 @@
             map.on('click', 'line-layer', (e) => {
             const lineCoordinates = e.lngLat; // クリックされた位置の座標を取得
             const lineProperties = e.features[0].properties;
-            const lineName = lineProperties['●名'] || '●';
+            const lineName = lineProperties['路線名'] || '路線';
 
             // ポップアップの作成と表示
             new maplibregl.Popup()
