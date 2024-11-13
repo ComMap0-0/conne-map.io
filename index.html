@@ -53,33 +53,37 @@
                 .catch(error => console.error('Polygon GeoJSONの読み込みに失敗しました:', error));
 
             // 1. 駅ポイント GeoJSON Layer
+            // ポイント GeoJSON Layer
             fetch(point1GeoJsonUrl)
                 .then(response => response.json())
                 .then(data => {
+        // GeoJSONデータをソースとして追加
                     map.addSource('point1-source', { type: 'geojson', data: data });
+
+        // ポイントの外枠（ストローク）を設定
                     map.addLayer({
                         id: 'point1-outline-layer',
                         type: 'circle',
                         source: 'point1-source',
                         paint: {
-                            'circle-radius': 5,
-                            'circle-color': '#ffffff',
-                            
+                        'circle-radius': 8, // ポイントの大きさ（外枠のため少し大きめに設定）
+                        'circle-color': '#000000', // 外枠の色
                         }
                     });
-                   
+
+        // ポイントの塗りつぶし（fill）を設定
                     map.addLayer({
                         id: 'point1-fill-layer',
                         type: 'circle',
                         source: 'point1-source',
                         paint: {
-                            'circle-radius': 3,
-                            'circle-color': '#ffffff',
-                            
+                        'circle-radius': 6, // 塗りつぶしの半径（外枠より小さくする）
+                        'circle-color': '#ffffff' // 塗りつぶし色
                         }
                     });
-                });
-                 .catch(error => console.error('ポイント GeoJSONの読み込みに失敗しました:', error));
+                 })
+                .catch(error => console.error('ポイント GeoJSONの読み込みに失敗しました:', error));
+
 
             // 2. Line GeoJSON Layer
             fetch(lineGeoJsonUrl)
