@@ -54,35 +54,35 @@
 
             // 1. 駅ポイント GeoJSON Layer
             // ポイント GeoJSON Layer
-            fetch(point1GeoJsonUrl)
-                .then(response => response.json())
-                .then(data => {
+fetch(point1GeoJsonUrl)
+    .then(response => response.json())
+    .then(data => {
         // GeoJSONデータをソースとして追加
-                    map.addSource('point1-source', { type: 'geojson', data: data });
+        map.addSource('point1-source', { type: 'geojson', data: data });
 
         // ポイントの外枠（ストローク）を設定
-                    map.addLayer({
-                        id: 'point1-outline-layer',
-                        type: 'circle',
-                        source: 'point1-source',
-                        paint: {
-                        'circle-radius': 8, // ポイントの大きさ（外枠のため少し大きめに設定）
-                        'circle-color': '#000000', // 外枠の色
-                        }
-                    });
+        map.addLayer({
+            id: 'point1-outline-layer',
+            type: 'circle',
+            source: 'point1-source',
+            paint: {
+                'circle-radius': 8, // ポイントの大きさ（外枠のため少し大きめに設定）
+                'circle-color': '#000000', // 外枠の色
+            }
+        });
 
         // ポイントの塗りつぶし（fill）を設定
-                    map.addLayer({
-                        id: 'point1-fill-layer',
-                        type: 'circle',
-                        source: 'point1-source',
-                        paint: {
-                        'circle-radius': 6, // 塗りつぶしの半径（外枠より小さくする）
-                        'circle-color': '#ffffff' // 塗りつぶし色
-                        }
-                    });
-                 })
-                .catch(error => console.error('ポイント GeoJSONの読み込みに失敗しました:', error));
+        map.addLayer({
+            id: 'point1-fill-layer',
+            type: 'circle',
+            source: 'point1-source',
+            paint: {
+                'circle-radius': 6, // 塗りつぶしの半径（外枠より小さくする）
+                'circle-color': '#ffffff' // 塗りつぶし色
+            }
+        });
+    })
+    .catch(error => console.error('ポイント GeoJSONの読み込みに失敗しました:', error));
 
 
             // 2. Line GeoJSON Layer
@@ -140,11 +140,33 @@
                                 .addTo(map);
                         });
 
+                        map.on('click', 'line-layer', (e) => {
+                            const lineCoordinates = e.features[0].geometry.coordinates.slice();
+                            const lineProperties = e.features[0].properties;
+                            const lineName = lineProperties['路線名'] || '路線';
+
+                            // ポップアップの作成と表示
+                            new maplibregl.Popup()
+                                .setLngLat(lineCoordinates)
+                                .setHTML(`<div><h3>${lineName}</h3></div>`)
+                                .addTo(map);
+                        });
+
                         // マウスオーバーでカーソルをポインタに変更
                         map.on('mouseenter', 'point-layer', () => {
                             map.getCanvas().style.cursor = 'pointer';
                         });
                         map.on('mouseleave', 'point-layer', () => {
+                            map.getCanvas().style.cursor = '';
+                        });
+                    })
+                    .catch(error => console.error('Point GeoJSONの読み込みに失敗しました:', error));
+                        
+                        // マウスオーバーでカーソルをポインタに変更
+                        map.on('mouseenter', 'line-layer', () => {
+                            map.getCanvas().style.cursor = 'pointer';
+                        });
+                        map.on('mouseleave', 'line-layer', () => {
                             map.getCanvas().style.cursor = '';
                         });
                     })
