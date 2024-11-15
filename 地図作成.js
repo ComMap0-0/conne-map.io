@@ -206,7 +206,7 @@
                             source: 'park-source',
                             layout: {
                                 'icon-image': 'park1-icon',
-                                'icon-size': 0.08,
+                                'icon-size': 0.05,
                                 'icon-allow-overlap': true
                             }
                             
