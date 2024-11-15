@@ -157,6 +157,10 @@
                                 'icon-size': 0.002,
                                 'icon-allow-overlap': true
                             }
+                                paint:{
+                                'icon-opacity':1//不透明度100%
+                                
+                                }
                         });
 
                         // ポイントをクリックしたときのポップアップ
