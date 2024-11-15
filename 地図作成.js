@@ -155,7 +155,7 @@
                             source: 'point-source',
                             layout: {
                                 'icon-image': 'park-icon',
-                                'icon-size': 0.03,
+                                'icon-size': 0.06,
                                 'icon-allow-overlap': true
                             },
                             paint:{
@@ -206,7 +206,7 @@
                             source: 'park-source',
                             layout: {
                                 'icon-image': 'park1-icon',
-                                'icon-size': 0.05,
+                                'icon-size': 0.09,
                                 'icon-allow-overlap': true
                             }
                             
