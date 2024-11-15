@@ -140,6 +140,7 @@
  
 
 // 3. 公園 GeoJSON Layer (画像アイコンのポイント)
+                
             map.loadImage(iconUrl, (error, image) => {
                 if (error) throw error;
                 map.addImage('park-icon', image);
@@ -157,9 +158,8 @@
                                 'icon-size': 0.002,
                                 'icon-allow-overlap': true
                             },
-                                paint:{
+                            paint:{
                                 'icon-opacity':1//不透明度100%
-                                
                                 }
                         });
 
