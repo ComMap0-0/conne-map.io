@@ -154,7 +154,7 @@
                             source: 'point-source',
                             layout: {
                                 'icon-image': 'park-icon',
-                                'icon-size': 0.03,
+                                'icon-size': 0.007,
                                 'icon-allow-overlap': true
                             }
                         });
