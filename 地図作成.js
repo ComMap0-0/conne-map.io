@@ -207,9 +207,7 @@
                             layout: {
                                 'icon-image': 'park1-icon',
                                 'icon-size': 0.009,
-                                'icon-allow-overlap': true,
-                                
-                                
+                                'icon-allow-overlap': true
                             }
                             
                         });
