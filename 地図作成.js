@@ -227,21 +227,25 @@
                             const properties = e.features[0].properties;
                             const park1Name = properties['施設名'] || '施設';
                             const imageUrl = properties.png && properties.png.trim() ? properties.png : './NO IMAGE.png';
+                            const HPurl = properties['URL']|| 'URL';    
 
 
 
                             const popupContent1 =
-                            `<div>
-                            <h3>${park1Name}</h3>
-                            <img src="${imageUrl}" alt="画像" style="width:200px;height:auto;"/>
-
-                            </div>
-                            `;
+                            <div>
+                                 <h3>${park1Name}</h3>
+                                  <img src="${imageUrl}" alt="画像" style="width:200px;height:auto;"/>
+                                  <br>
+                                    ${HPurl && HPurl !== '-' ? `<a href="${HPurl}" target="_blank">公式サイト</a>` : '<p>-</p>'}
+                                </div>
+    `                           ;
 
                             // ポップアップの作成と表示
-                            new maplibregl.Popup()
+                            new maplibregl.Popup(
+                            
+                            )
                             .setLngLat(coordinates1)
-                            .setHTML(popupContent1)
+                            .setHTML(popupContent2)
                             .addTo(map);
                         });
 
