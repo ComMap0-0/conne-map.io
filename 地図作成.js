@@ -227,7 +227,7 @@
                             const coordinates1 = e.features[0].geometry.coordinates.slice();
                             const properties = e.features[0].properties;
                             const park1Name = properties['施設名'] || '施設';
-                            const imageUrl = properties.png && properties.png.trim() ? properties.png : './文京区_公園写真/NO IMAGE.png';
+                            const imageUrl = properties.png && properties.png.trim() ? properties.png : './NO IMAGE.png';
 
 
 
