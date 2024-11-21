@@ -224,20 +224,28 @@
                         
                         
                         map.on('click', 'park-layer', (e) => {
-                            const coordinates1 = e.features[0].geometry.coordinates.slice();
+const coordinates1 = e.features[0].geometry.coordinates.slice();
                             const properties = e.features[0].properties;
                             const park1Name = properties['施設名'] || '施設';
                             const imageUrl = properties.png && properties.png.trim() ? properties.png : './文京区_公園写真/NO IMAGE.png';
+                            const HPurl = properties['URL']|| 'URL';
 
 
+                     
 
-                            const popupContent1 =
-                            `<div>
-                            <h3>${park1Name}</h3>
-                            <img src="${imageUrl}" alt="画像" style="width:200px;height:auto;"/>
+                            //公園のHP_URL（リンク）を追加
+                            //見出し
+                            //リンク名
+                            //リンク（URL）
 
-                            </div>
-                            `;
+                            const popupContent2 = `
+                                 <div>
+                                 <h3>${park1Name}</h3>
+                                  <img src="${imageUrl}" alt="画像" style="width:200px;height:auto;"/>
+                                  <br>
+                                    ${HPurl && HPurl !== '-' ? `<a href="${HPurl}" target="_blank">公式サイト</a>` : '<p>-</p>'}
+                                </div>
+    `                           ;
 
                             // ポップアップの作成と表示
                             new maplibregl.Popup()
