@@ -8,20 +8,19 @@
         });
 
         // GeoJSONファイルとアイコン画像のパス
-        const polygonGeoJsonUrl = './東京都（本島のみ）_行政区域_4326v2.geojson';//行政区域
+        const polygonGeoJsonUrl = './東京都（本島のみ）_行政区域_4326v2.geojson';//行政区 
         const lineGeoJsonUrl = './東京都_路線_R5_4326v6.geojson';//鉄道路線
         const pointGeoJsonUrl = './東京都_公園_2011年度（平成23年年度）.geojson';//公園ポイント
-        const iconUrl = './公園アイコン.png';  // アイコン画像のパス
-        const bunkyo_iconUrl ='./文京区_公園.png';
-        const point1GeoJsonUrl = './東京都_駅_4326_4.geojson';//東京駅ポイント;
+        const point1GeoJsonUrl = './東京都_駅_4326_4.geojson'//東京駅ポイント;
         const parkGeoJsonUrl = './文京区_公園.geojson';//文京区公園ポイント;
+        const iconUrl = './公園アイコン.png';  // アイコン画像のパス
+       const bunkyo_iconUrl ='./文京区_公園.png';
+
 
         // 地図の読み込みが完了したらGeoJSONデータを追加
         map.on('load', () => {
 
-       
-            
-            //行政区域 GeoJsonデータ追加
+//1.行政区域 GeoJsonデータ追加
             fetch(polygonGeoJsonUrl)
                 .then(response => response.json())
                 .then(data => {
@@ -84,7 +83,7 @@
             })
             .catch(error => console.error('Line GeoJSONの読み込みに失敗しました:', error));
 
-            // 1. 駅ポイント GeoJSON Layer
+ // 2. 駅ポイント GeoJSON Layer
             fetch(point1GeoJsonUrl)
                 .then(response => response.json())
                 .then(data => {
@@ -138,33 +137,33 @@
                     })
                     .catch(error => console.error(' GeoJSONの読み込みに失敗しました:', error));
         
-      
-            // 3. 公園 GeoJSON Layer (画像アイコンのポイント)
-            
-                //都市公園 レイヤーの追加
-                map.loadImage(iconUrl, (error, image) => {
-                    if (error) throw error;
-                    map.addImage('park-icon', image);
-    
-                    map.addSource('point-source', { type: 'geojson', data: data });
-                    map.addLayer({
-                        id: 'point-layer',
-                        type: 'symbol',
-                        source: 'point-source',
-                        layout: {
-                            'icon-image': 'park-icon',
-                            'icon-size': 0.5,
-                            'icon-allow-overlap': true
-                        }
-                    });
-                });
+ 
+
+// 3. 公園 GeoJSON Layer (画像アイコンのポイント)
+            map.loadImage(iconUrl, (error, image) => {
+                if (error) throw error;
+                map.addImage('park-icon', image);
+
+                fetch(pointGeoJsonUrl)
+                    .then(response => response.json())
+                    .then(data => {
+                        map.addSource('point-source', { type: 'geojson', data: data });
+                        map.addLayer({
+                            id: 'point-layer',
+                            type: 'symbol',
+                            source: 'point-source',
+                            layout: {
+                                'icon-image': 'park-icon',
+                                'icon-size': 0.03,
+                                'icon-allow-overlap': true
+                            }
+                        });
 
                         // ポイントをクリックしたときのポップアップ
                         map.on('click', 'point-layer', (e) => {
                             const coordinates = e.features[0].geometry.coordinates.slice();
                             const properties = e.features[0].properties;
                             const parkName = properties['公園名'] || '公園';
-                            
 
                             // ポップアップの作成と表示
                             new maplibregl.Popup()
@@ -182,14 +181,13 @@
                         map.on('mouseleave', 'point-layer', () => {
                             map.getCanvas().style.cursor = '';
                         });
-                    
-                    
-                    //公園の透過度を調整するスライダー
-                    
-                    
-            
+                    })
+                    .catch(error => console.error('Point GeoJSONの読み込みに失敗しました:', error));
 
-            //文京区_公園
+                    
+            });
+
+//4.文京区_公園
             map.loadImage(bunkyo_iconUrl, (error, image) => {
                 if (error) throw error;
                 map.addImage('park1-icon', image);
@@ -229,31 +227,22 @@
                             const coordinates1 = e.features[0].geometry.coordinates.slice();
                             const properties = e.features[0].properties;
                             const park1Name = properties['施設名'] || '施設';
-                            const imageUrl = properties.png && properties.png.trim() ? properties.png : './NO IMAGE.png';
-                            const HPurl = properties['URL']|| 'URL';  
+                            const imageUrl = properties.png && properties.png.trim() ? properties.png : './文京区_公園写真/NO IMAGE.png';
 
-                     
 
-                            //公園のHP_URL（リンク）を追加
-                            //見出し
-                            //リンク名
-                            //リンク（URL）
 
-                            const popupContent2 = `
-                                 <div>
-                                 <h3>${park1Name}</h3>
-                                  <img src="${imageUrl}" alt="画像" style="width:200px;height:auto;"/>
-                                  <br>
-                                    ${HPurl && HPurl !== '-' ? `<a href="${HPurl}" target="_blank">公式サイト</a>` : '<p>-</p>'}
-                                </div>
-    `                           ;
+                            const popupContent1 =
+                            `<div>
+                            <h3>${park1Name}</h3>
+                            <img src="${imageUrl}" alt="画像" style="width:200px;height:auto;"/>
+
+                            </div>
+                            `;
 
                             // ポップアップの作成と表示
-                            new maplibregl.Popup(
-                            
-                            )
+                            new maplibregl.Popup()
                             .setLngLat(coordinates1)
-                            .setHTML(popupContent2)
+                            .setHTML(popupContent1)
                             .addTo(map);
                         });
 
@@ -276,9 +265,9 @@
 
 
 
-            document.getElementById('icon-opacity').addEventListener('input', (e) => {
-                const iconOpacity = parseFloat(e.target.value);
-                map.setPaintProperty('point-layer','icon-opacity',iconOpacity);
+            document.getElementById('point-layer-toggle').addEventListener('change', (e) => {
+                const visibility = e.target.checked ? 'visible' : 'none';
+                map.setLayoutProperty('point-layer', 'visibility', visibility);
             });
 
         });
